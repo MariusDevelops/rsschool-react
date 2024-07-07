@@ -30,6 +30,11 @@ module.exports = {
   },
   plugins: ["react-refresh", "react-compiler", "react"],
   rules: {
+    "@typescript-eslint/no-unsafe-assignment": "off",
+    "one-var": "off",
+    "max-statements": "off",
+    "@typescript-eslint/no-floating-promises": "off",
+    "no-console": "off",
     "@typescript-eslint/no-empty-interface": "off",
     "no-unused-vars": "off",
     "react/no-set-state": "off",

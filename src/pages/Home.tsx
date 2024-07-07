@@ -1,18 +1,18 @@
 import "./Home.css";
-import React, { Component } from "react";
+import { fetchAllFilms, fetchFilms } from "../services/apiService";
+import { Component } from "react";
 import Search from "../compnents/Search";
-import { v4 as uuidv4 } from "uuid";
 
-interface SearchResult {
-  description: string;
-  name: string;
+interface Film {
+  title: string;
+  director: string;
 }
 
 interface HomeProps {}
 
 interface HomeState {
   savedSearchTerm: string;
-  searchResults: SearchResult[];
+  searchResults: Film[];
 }
 
 class Home extends Component<HomeProps, HomeState> {
@@ -28,12 +28,16 @@ class Home extends Component<HomeProps, HomeState> {
     if (typeof localStorage !== "undefined") {
       const storedTerm = localStorage.getItem("savedSearchTerm");
       if (storedTerm) {
-        this.setState({ savedSearchTerm: storedTerm });
+        this.setState({ savedSearchTerm: storedTerm }, () => {
+          this.performSearch();
+        });
+      } else {
+        this.fetchAllItems();
       }
     }
   }
 
-  shouldComponentUpdate(nextProps: HomeProps, nextState: HomeState) {
+  shouldComponentUpdate(nextState: HomeState) {
     const { savedSearchTerm, searchResults } = this.state;
     return (
       savedSearchTerm !== nextState.savedSearchTerm ||
@@ -46,24 +50,35 @@ class Home extends Component<HomeProps, HomeState> {
       localStorage.setItem("savedSearchTerm", term);
     }
     this.setState({ savedSearchTerm: term }, () => {
-      this.performSearch();
+      if (term.trim() === "") {
+        this.fetchAllItems();
+      } else {
+        this.performSearch();
+      }
     });
   };
 
-  performSearch = () => {
-    const { savedSearchTerm } = this.state,
-      results: SearchResult[] = [
-        {
-          description: `Description for ${savedSearchTerm} Result 1`,
-          name: `${savedSearchTerm} Result 1`,
-        },
-        {
-          description: `Description for ${savedSearchTerm} Result 2`,
-          name: `${savedSearchTerm} Result 2`,
-        },
-      ];
+  fetchAllItems = async () => {
+    try {
+      const films = await fetchAllFilms();
+      this.setState({ searchResults: films });
+    } catch (error) {
+      console.error("Error fetching all films:", error);
+    }
+  };
 
-    this.setState({ searchResults: results });
+  performSearch = () => {
+    const { savedSearchTerm } = this.state;
+    fetchFilms(savedSearchTerm)
+      .then((films) => {
+        this.setState({ searchResults: films });
+      })
+      .catch((error) => {
+        console.error(
+          `Error fetching films with search term '${savedSearchTerm}':`,
+          error,
+        );
+      });
   };
 
   renderSearchResults = () => {
@@ -71,10 +86,10 @@ class Home extends Component<HomeProps, HomeState> {
 
     return (
       <div>
-        {searchResults.map((result) => (
-          <div key={uuidv4()}>
-            <h3>{result.name}</h3>
-            <p>{result.description}</p>
+        {searchResults.map((film) => (
+          <div key={film.title}>
+            <h3>{film.title}</h3>
+            <p>Director: {film.director}</p>
           </div>
         ))}
       </div>
