@@ -30,6 +30,8 @@ module.exports = {
   },
   plugins: ["react-refresh", "react-compiler", "react"],
   rules: {
+    "no-ternary": "off",
+    "sort-keys": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
     "one-var": "off",
     "max-statements": "off",
