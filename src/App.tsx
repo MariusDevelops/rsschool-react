@@ -1,13 +1,6 @@
 import "./App.css";
+import Home from "./pages/Home";
 
-const App = () => {
-  const greeting = "hello";
-
-  return (
-    <div>
-      <p>{greeting}</p>
-    </div>
-  );
-};
+const App = () => <Home />;
 
 export default App;

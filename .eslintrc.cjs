@@ -30,6 +30,7 @@ module.exports = {
   },
   plugins: ["react-refresh", "react-compiler", "react"],
   rules: {
+    "react/jsx-no-literals": "off",
     "react/react-in-jsx-scope": "off",
     "func-style": ["error", "expression"],
     "react/function-component-definition": [
