@@ -1,6 +1,7 @@
 import "./Home.css";
 import { fetchAllFilms, fetchFilms } from "../services/apiService";
 import { Component } from "react";
+import ErrorBoundary from "../compnents/ErrorBoundary";
 import Search from "../compnents/Search";
 
 interface Film {
@@ -17,6 +18,10 @@ interface HomeState {
 }
 
 class Home extends Component<HomeProps, HomeState> {
+  static handleThrowError = () => {
+    throw new Error("Test error thrown from Home component!");
+  };
+
   constructor(props: HomeProps) {
     super(props);
     this.state = {
@@ -67,6 +72,7 @@ class Home extends Component<HomeProps, HomeState> {
       this.setState({ searchResults: films });
     } catch (error) {
       console.error("Error fetching all films:", error);
+      throw error;
     } finally {
       this.setState({ isLoading: false });
     }
@@ -84,6 +90,7 @@ class Home extends Component<HomeProps, HomeState> {
           `Error fetching films with search term '${savedSearchTerm}':`,
           error,
         );
+        throw error;
       })
       .finally(() => {
         this.setState({ isLoading: false });
@@ -109,18 +116,27 @@ class Home extends Component<HomeProps, HomeState> {
     const { savedSearchTerm, isLoading } = this.state;
 
     return (
-      <div>
-        <div className="section top-section">
-          <Search
-            savedSearchTerm={savedSearchTerm}
-            setSavedSearchTerm={this.setSavedSearchTerm}
-          />
+      <ErrorBoundary fallback={<h1>Something went wrong.</h1>}>
+        <div>
+          <div className="section top-section">
+            <Search
+              savedSearchTerm={savedSearchTerm}
+              setSavedSearchTerm={this.setSavedSearchTerm}
+            />
+          </div>
+          <div className="section bottom-section">
+            <h2>Search Results</h2>
+            {isLoading ? (
+              <div>Loading...</div>
+            ) : (
+              <div>{this.renderSearchResults()}</div>
+            )}
+            <button onClick={Home.handleThrowError} type="button">
+              Throw Error
+            </button>
+          </div>
         </div>
-        <div className="section bottom-section">
-          <h2>Search Results</h2>
-          {isLoading ? <div>Loading...</div> : this.renderSearchResults()}
-        </div>
-      </div>
+      </ErrorBoundary>
     );
   }
 }

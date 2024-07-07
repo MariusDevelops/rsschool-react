@@ -30,6 +30,8 @@ module.exports = {
   },
   plugins: ["react-refresh", "react-compiler", "react"],
   rules: {
+    "class-methods-use-this": "off",
+    "react/jsx-max-depth": "off",
     "no-ternary": "off",
     "sort-keys": "off",
     "@typescript-eslint/no-unsafe-assignment": "off",
