@@ -1,15 +1,13 @@
-import './App.css'
+import "./App.css";
 
 const App = () => {
-    const greeting = 'hello'
+  const greeting = "hello";
 
-    return (
-        <div>
-            <p>
-                {greeting}
-            </p>
-        </div>
-    )
-}
+  return (
+    <div>
+      <p>{greeting}</p>
+    </div>
+  );
+};
 
-export default App
+export default App;
