@@ -30,6 +30,9 @@ module.exports = {
   },
   plugins: ["react-refresh", "react-compiler", "react"],
   rules: {
+    "@typescript-eslint/no-empty-interface": "off",
+    "no-unused-vars": "off",
+    "react/no-set-state": "off",
     "react/jsx-no-literals": "off",
     "react/react-in-jsx-scope": "off",
     "func-style": ["error", "expression"],
